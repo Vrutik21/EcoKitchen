@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Delete Food Item</title>
+  </head>
+  <body>
+    <h1>Delete Food Item</h1>
+    <p>Are you sure you want to delete "{{ food_item.name }}"?</p>
+    <form method="post">
+      {% csrf_token %}
+      <button type="submit">Yes, delete</button>
+    </form>
+    <a href="{% url 'food_item_list' %}">Cancel</a>
+  </body>
+</html>

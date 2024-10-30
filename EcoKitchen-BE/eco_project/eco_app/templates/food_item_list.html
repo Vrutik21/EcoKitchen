@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Food Items</title>
+  </head>
+  <body>
+    <h1>Food Items</h1>
+    <a href="{% url 'food_item_create' %}">Add New Food Item</a>
+    <ul>
+      {% for item in food_items %}
+      <li>
+        {{ item.name }} - {{ item.quantity }} {{ item.unit }}
+        <a href="{% url 'food_item_update' item.pk %}">Edit</a>
+        <a href="{% url 'food_item_delete' item.pk %}">Delete</a>
+      </li>
+      {% empty %}
+      <li>No food items available.</li>
+      {% endfor %}
+    </ul>
+  </body>
+</html>
