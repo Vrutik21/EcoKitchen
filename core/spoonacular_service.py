@@ -1,7 +1,7 @@
 import requests
 
 # SPOONACULAR_API_KEY = 'd3c58935887b4ebf989738755f635e2e'
-SPOONACULAR_API_KEY = '08798ac49dd8428586293dd129ec56df'
+SPOONACULAR_API_KEY = '2a7ae2df2e7b4026ab5aa7406ed29961'
 BASE_URL = 'https://api.spoonacular.com/recipes'
 
 def get_recipes_by_ingredients(ingredients):

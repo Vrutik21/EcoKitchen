@@ -4,34 +4,31 @@
 
 {% block content %}
 <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
-<section class="flex overflow-hidden flex-col px-20 pt-11 pb-96 max-md:px-5 max-md:pb-24" style="background-color: #252836;">
-  <header class="flex flex-wrap gap-5 justify-between self-end w-full max-w-[984px] max-md:max-w-full">
-    <h1 class="my-auto text-3xl font-bold tracking-widest text-white">Recipe</h1>
+<section class="flex flex-col items-center px-8 pt-16 pb-32 max-md:px-4 max-md:pb-24 bg-green-50 rounded-xl">
+  <header class="flex flex-col items-center mb-12">
+    <h1 class="text-4xl font-extrabold text-green-700">Recipe Generator</h1>
+    <p class="text-lg font-medium text-green-600 mt-2">Make delicious recipes with near-expiring ingredients.</p>
   </header>
 
-  <h2 class="self-start mt-5 text-xl font-medium font-semibold tracking-wider text-white">Near to Expire Products</h2>
-  <form method="POST" class="w-full max-w-full mt-8 p-0 shadow-none" style="background-color: #252836;">
+  <h2 class="text-2xl font-semibold text-green-700 mb-6">Near Expiring Products</h2>
+  
+  <!-- Recipe Selection Form -->
+  <form method="POST" class="w-full max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-6">
     {% csrf_token %}
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 w-full" style="color: #96979d;">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
       {% for item in food_items %}
       <article 
-        class="flex overflow-hidden flex-col gap-4 px-5 py-6 rounded-lg article-item" 
-        style="background-color: #3d4154; color: #96979d;">
-        <div class="flex items-start justify-between">
-          <div class="flex flex-col">
-            <h3 class="text-xl font-medium tracking-wider">{{ item.name }}</h3>
-            <p class="mt-2 mb-2 text-sm italic tracking-wide leading-none">Expires on: {{ item.expiration_date }}</p>
-          </div>
-          <!-- Checkbox is hidden and linked to the image -->
-          <input type="checkbox" name="selected_items" value="{{ item.name }}" id="checkbox-{{ forloop.counter }}" class="hidden">
-          <label for="checkbox-{{ forloop.counter }}" class="relative">
-            <figure class="flex flex-col justify-center items-center px-1.5 w-[50px] h-[50px] bg-transparent rounded-full">
-              <img loading="lazy" 
-                   src="https://cdn.builder.io/api/v1/image/assets/TEMP/9dc81aae6ad6e719a8d6ea4a221c712b2aeb146129db9b46f8b10b27095d3833?placeholderIfAbsent=true&apiKey=877b457759d54d259ca44608a719ca2c" 
-                   class="object-contain w-full aspect-[1.33] label-image" 
-                   alt="{{ item.name }} icon" />
-            </figure>
-          </label>
+        class="flex flex-col items-center p-4 rounded-lg border border-transparent bg-green-50 hover:bg-green-200 hover:border-green-400 transition duration-300 ease-in-out cursor-pointer"
+        onclick="toggleSelection(event, '{{ item.name }}')">
+        <input type="checkbox" name="selected_items" value="{{ item.name }}" id="checkbox-{{ forloop.counter }}" class="hidden">
+        <div class="text-center">
+          <h3 class="text-lg font-medium text-green-800">{{ item.name }}</h3>
+          <p class="text-sm text-gray-500 italic mt-2">Expires on: {{ item.expiration_date }}</p>
+        </div>
+
+        <!-- Select/Unselect Label -->
+        <div class="mt-4 text-lg font-semibold text-green-800">
+          <span class="select-status">Select</span>
         </div>
       </article>
       {% endfor %}
@@ -39,25 +36,24 @@
 
     <!-- Extra Ingredients Input -->
     <div class="mt-8">
-      <label for="extra-ingredients" class="block text-white font-medium tracking-wider">Add Extra Ingredients:</label>
+      <label for="extra-ingredients" class="block text-xl font-medium text-green-700">Add Extra Ingredients :</label>
       <textarea
         name="extra_ingredients"
         id="extra-ingredients"
-        rows="3"
-        class="mt-2 p-3 w-full rounded-lg shadow-lg text-sm tracking-wide focus:outline-none"
+        rows="4"
+        class="mt-2 p-4 w-full rounded-lg border border-green-200 text-green-700 placeholder-green-400 focus:outline-none focus:ring-2 focus:ring-green-400"
         placeholder="Enter ingredients separated by commas..."
-        style="background-color: #3d4154; color: #96979d;"></textarea>
+        style="background-color: #f9f9f9;"></textarea>
     </div>
 
     <!-- Get Recipes Button -->
-    <div class="flex mt-12">
+    <div class="flex justify-center mt-10">
       <button type="submit" 
-              class="flex overflow-hidden gap-4 items-center p-3.5 text-xl font-medium tracking-wider rounded-lg hover:bg-[#f46262] hover:text-white transition duration-300" 
-              style="background-color: #353849; color: #96979d;">
-        <span class="self-stretch my-auto">Make Recipe</span>
+              class="flex items-center gap-4 px-8 py-3 bg-green-600 text-white text-xl font-semibold rounded-lg shadow-md hover:bg-green-700 transition duration-300">
+        <span>Make Recipe</span>
         <img loading="lazy" 
              src="https://cdn.builder.io/api/v1/image/assets/TEMP/a3b83e6e6f5ebbae1d8c72fdc0c02225111fedba2f8a51fe2718b5b34c8cf912?placeholderIfAbsent=true&apiKey=877b457759d54d259ca44608a719ca2c" 
-             class="object-contain shrink-0 self-stretch my-auto w-6 aspect-square" 
+             class="w-6 h-6 object-contain" 
              alt="Make Recipe icon" />
       </button>
     </div>
@@ -67,29 +63,24 @@
 <!-- Add the script for interactivity -->
 <script>
   document.addEventListener('DOMContentLoaded', () => {
-    const articles = document.querySelectorAll('.article-item');
+    // Function to toggle selection when a card is clicked
+    window.toggleSelection = (event, itemName) => {
+      const checkbox = event.currentTarget.querySelector('input[type="checkbox"]');
+      const statusLabel = event.currentTarget.querySelector('.select-status');
+      checkbox.checked = !checkbox.checked; // Toggle the checkbox state
 
-    articles.forEach(article => {
-      const checkbox = article.querySelector('input[type="checkbox"]');
-      const labelImage = article.querySelector('.label-image');
-      const labelFigure = article.querySelector('figure');
-
-      checkbox.addEventListener('change', () => {
-        if (checkbox.checked) {
-          article.style.backgroundColor = '#f46262';
-          article.style.color = '#ffffff';
-          labelImage.src = "https://cdn.builder.io/api/v1/image/assets/TEMP/acc0566c94c54e41f94aa29032ce1c751e68a9cfcb74e845fdbf5af3b120c512?placeholderIfAbsent=true&apiKey=877b457759d54d259ca44608a719ca2c";
-          // labelFigure.classList.add('bg-white');
-          labelImage.style.filter = "brightness(0) invert(1)";
-        } else {
-          article.style.backgroundColor = '#3d4154';
-          article.style.color = '#96979d';
-          labelImage.src = "https://cdn.builder.io/api/v1/image/assets/TEMP/9dc81aae6ad6e719a8d6ea4a221c712b2aeb146129db9b46f8b10b27095d3833?placeholderIfAbsent=true&apiKey=877b457759d54d259ca44608a719ca2c";
-          labelFigure.classList.remove('bg-white');
-          labelImage.style.filter = "none";
-        }
-      });
-    });
+      // Add a visual cue for the selection
+      const card = event.currentTarget;
+      if (checkbox.checked) {
+        card.classList.add('bg-green-300', 'border-green-500');
+        card.classList.remove('bg-green-50', 'border-transparent');
+        statusLabel.textContent = 'Unselect';  // Change to "Unselect"
+      } else {
+        card.classList.remove('bg-green-300', 'border-green-500');
+        card.classList.add('bg-green-50', 'border-transparent');
+        statusLabel.textContent = 'Select';  // Change to "Select"
+      }
+    };
   });
 </script>
 {% endblock %}

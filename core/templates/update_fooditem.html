@@ -1,178 +1,69 @@
-<style>
-  body {
-    background-color: #1a1c24;
-    font-family: 'Poppins', sans-serif;
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-  }
-  
-  .product-form {
-    width: 480px;
-    background-color: #2c2f3a;
-    border-radius: 12px;
-    padding: 25px 30px;
-    position: relative;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-  }
-  
-  .product-form h2 {
-    margin-top: 0;
-    font-size: 22px;
-    font-weight: bold;
-    color: white;
-  }
-  
-  .form-row {
-    display: flex;
-    gap: 15px;
-  }
-  
-  .form-group {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 15px;
-    width: 100%;
-  }
-  
-  .form-group input,
-  .form-group select,
-  .form-group textarea {
-    border-radius: 8px;
-    background-color: #3a3f4b;
-    color: white;
-    padding: 10px;
-    border: 1px solid #5a5e6b;
-    font-size: 14px;
-  }
-  
-  .form-group input:focus,
-  .form-group select:focus,
-  .form-group textarea:focus {
-    outline: none;
-    border-color: #6a11cb;
-  }
-  
-  .description-input {
-    resize: none;
-    height: 60px;
-  }
-  
-  .upload-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 8px;
-    background-color: #3a3f4b;
-    color: #aaa;
-    font-size: 14px;
-    padding: 10px;
-    border: 1px solid #5a5e6b;
-    cursor: pointer;
-  }
-  
-  .save-button {
-    background-color: #ff5c5c;
-    color: white;
-    border: none;
-    padding: 12px;
-    width: 100%;
-    font-size: 16px;
-    font-weight: bold;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background 0.3s ease;
-  }
-  
-  .save-button:hover {
-    background-color: #e14a4a;
-  }
-  
-  .close-button {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    background: none;
-    border: none;
-    color: white;
-    font-size: 20px;
-    cursor: pointer;
-  }
-  
-  .close-button:hover {
-    transform: scale(1.1);
-  }
-  
-  .icon {
-    margin-left: 8px;
-    font-size: 18px;
-  }
-  
-  /* Ensures spacing between close button and form */
-  .form-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-  
-  @media (max-width: 600px) {
-    .product-form {
-      width: 90%;
-      padding: 20px;
-    }
-  }
-  </style>
-  
-  <form method="POST" class="product-form" enctype="multipart/form-data">
-      {% csrf_token %}
-       <div class="form-header">
-        <h2>Update Product</h2>
-        <button type="button" class="close-button" onclick="goBack()">&times;</button>
-    </div>
-  
-      <div class="form-row">
-          <div class="form-group">
-              <label for="id_name">Product Name</label>
-              {{ form.name }}
-          </div>
-          <div class="form-group">
-              <label for="id_category">Category</label>
-              {{ form.category }}
-          </div>
-      </div>
-      
-      <div class="form-group">
-          <label for="id_description">Description</label>
-          {{ form.description }}
-      </div>
-      
-      <div class="form-row">
-          <div class="form-group">
-              <label for="id_quantity">Quantity</label>
-              {{ form.quantity }}
-          </div>
-          <div class="form-group">
-              <label for="id_expiration_date">Expiration Date</label>
-              {{ form.expiration_date }}
-          </div>
-      </div>
-      
+{% extends "base.html" %}
 
-      
-      <div class="form-group">
-          <label for="id_priority">Priority</label>
-          {{ form.priority }}
-      </div>
-      
-      <button type="submit" class="save-button">Save</button>
-  </form>
+{% block title %}Edit Food Item{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-green-50 flex justify-center items-center py-8 px-4">
+    <form method="POST" class="w-full max-w-lg bg-white rounded-xl shadow-lg p-8 space-y-6">
+        {% csrf_token %}
+        
+        <!-- Form Header -->
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-semibold text-green-700">Update Product</h2>
+            <button type="button" class="text-green-600 hover:text-green-800 text-2xl" onclick="goBack()">&times;</button>
+        </div>
+
+        <!-- Product Details -->
+        <div class="space-y-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div class="form-group">
+                    <label for="id_name" class="text-sm font-medium text-green-700">Product Name</label>
+                    <input type="text" name="name" id="id_name" class="w-full p-3 bg-gray-50 border border-green-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Enter product name" value="{{ form.name.value }}">
+                </div>
+                <div class="form-group">
+                    <label for="id_category" class="text-sm font-medium text-green-700">Category</label>
+                    <select name="category" id="id_category" class="w-full p-3 bg-gray-50 border border-green-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                        {% for choice in form.category.field.choices %}
+                            <option value="{{ choice.0 }}" {% if choice.0 == form.category.value %}selected{% endif %}>{{ choice.1 }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="id_description" class="text-sm font-medium text-green-700">Description</label>
+                <textarea name="description" id="id_description" class="w-full p-3 bg-gray-50 border border-green-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Enter product description">{{ form.description.value }}</textarea>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div class="form-group">
+                    <label for="id_quantity" class="text-sm font-medium text-green-700">Quantity</label>
+                    <input type="number" name="quantity" id="id_quantity" class="w-full p-3 bg-gray-50 border border-green-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Enter quantity" value="{{ form.quantity.value }}">
+                </div>
+                <div class="form-group">
+                    <label for="id_expiration_date" class="text-sm font-medium text-green-700">Expiration Date</label>
+                    <input type="date" name="expiration_date" id="id_expiration_date" class="w-full p-3 bg-gray-50 border border-green-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" value="{{ form.expiration_date.value }}">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="id_priority" class="text-sm font-medium text-green-700">Priority</label>
+                <select name="priority" id="id_priority" class="w-full p-3 bg-gray-50 border border-green-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                    {% for choice in form.priority.field.choices %}
+                        <option value="{{ choice.0 }}" {% if choice.0 == form.priority.value %}selected{% endif %}>{{ choice.1 }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <!-- Save Button -->
+        <button type="submit" class="w-full py-3 px-4 bg-green-600 text-white font-bold rounded-lg hover:bg-green-500 focus:outline-none focus:ring-4 focus:ring-green-300 transition-colors">Save</button>
+    </form>
+</div>
 
 <script>
     function goBack() {
         window.history.back();
     }
 </script>
+{% endblock %}

@@ -3,163 +3,45 @@
 {% block title %}Recipe Results{% endblock %}
 
 {% block content %}
-<style>
+<section class="bg-gradient-to-b bg-green-50 py-16 px-6 max-w-screen-xl mx-auto rounded-lg shadow-lg">
+  <div class="text-center text-black mb-12">
+    <h1 class="text-4xl font-semibold tracking-wide">Recipe Results</h1>
+    <p class="text-lg mt-4">Discover recipes based on your selected items</p>
+  </div>
 
-.recipe-section {
-    border-radius: 16px;
-    background: var(--Base-Dark-Bg-1, #252836);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    font-family: Poppins, sans-serif;
-    padding: 40px;
-}
+  {% if error %}
+    <div class="bg-red-600 p-6 rounded-lg text-black mb-12">
+      <h2 class="text-2xl font-bold">Oops, something went wrong!</h2>
+      <p class="mt-2">{{ error }}</p>
+      <a href="{% url 'recipes' %}" class="text-lg mt-4 inline-block underline text-yellow-300">Back to Near to Expire Product Listing</a>
+    </div>
+  {% elif recipes %}
+    <div class="space-y-12">
+      <a href="{% url 'recipes' %}" class="flex items-center gap-3 text-black text-xl mb-8">
+        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/902f3ae4fd6930e29a6fd4d1b4e7d7844a7ad167ca20c20b8ea9e270dc524105?placeholderIfAbsent=true&apiKey=877b457759d54d259ca44608a719ca2c" alt="Back icon" class="w-6 h-6 text-black" />
+        <span>Back to Near to Expire Product Listing</span>
+      </a>
 
-@media (max-width: 991px) {
-    .recipe-section {
-        padding: 20px;
-    }
-}
-
-.section-title {
-    color: #fefefe;
-    font-size: 28px;
-    font-weight: 600;
-    margin-bottom: 20px;
-}
-
-.back-link {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 18px;
-    color: #ddd;
-    font-weight: 500;
-    margin-bottom: 32px;
-    text-decoration: none;
-}
-
-.recipe-list {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-}
-
-.recipe-card {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    background: #2c2f3f;
-    border-radius: 10px;
-    padding: 16px;
-    transition: transform 0.2s ease;
-}
-
-.recipe-card:hover {
-    transform: scale(1.02);
-}
-
-.recipe-image {
-    width: 120px;
-    height: 120px;
-    object-fit: cover;
-    border-radius: 8px;
-}
-
-.recipe-details {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-.recipe-title {
-    color: #fff;
-    font-size: 20px;
-    font-weight: 600;
-    margin-bottom: 10px;
-}
-
-.view-recipe-btn {
-    color: #ee2f2f;
-    border: 1px solid #ee2f2f;
-    background: none;
-    border-radius: 4px;
-    padding: 8px 20px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    text-transform: uppercase;
-}
-
-.view-recipe-btn:hover {
-    background: #ee2f2f;
-    color: #fff;
-}
-
-.divider {
-    display: none; /* Hide dividers for cleaner design */
-}
-</style>
-
-<h2>Recipes Based on Selected Items</h2>
-
-{% if error %}
-    <section class="recipe-section">
-        <h1 class="section-title">Recipe</h1>
-        <p style="color: red;">{{ error }}</p>
-        <a href="{% url 'recipes' %}" class="back-link">
-            <img
-                src="https://cdn.builder.io/api/v1/image/assets/TEMP/902f3ae4fd6930e29a6fd4d1b4e7d7844a7ad167ca20c20b8ea9e270dc524105?placeholderIfAbsent=true&apiKey=877b457759d54d259ca44608a719ca2c"
-                alt="Back icon"
-                class="back-icon"
-            />
-            <span>Back to Near to Expire Product Listing</span>
-        </a>
-    </section>
-{% elif recipes %}
-    <section class="recipe-section">
-        <h1 class="section-title">Recipe</h1>
-        <a href="{% url 'recipes' %}" class="back-link">
-            <img
-                src="https://cdn.builder.io/api/v1/image/assets/TEMP/902f3ae4fd6930e29a6fd4d1b4e7d7844a7ad167ca20c20b8ea9e270dc524105?placeholderIfAbsent=true&apiKey=877b457759d54d259ca44608a719ca2c"
-                alt="Back icon"
-                class="back-icon"
-            />
-            <span>Back to Near to Expire Product Listing</span>
-        </a>
-        <div class="recipe-list">
-            {% for recipe in recipes %}
-            <article class="recipe-card">
-                <img
-                    src="{{ recipe.image }}"
-                    alt="{{ recipe.title }}"
-                    class="recipe-image"
-                />
-                <div class="recipe-details">
-                    <h2 class="recipe-title">{{ recipe.title }}</h2>
-                    <a href="{% url 'recipe_detail' recipe.id %}" target="_blank">
-                        <button class="view-recipe-btn">View Recipe</button>
-                    </a>
-                </div>
-            </article>
-            <hr class="divider" />
-            {% endfor %}
-        </div>
-    </section>
-{% else %}
-    <section class="recipe-section">
-        <h1 class="section-title">Recipe</h1>
-        <p>No recipes found!</p>
-        <a href="{% url 'recipes' %}" class="back-link">
-            <img
-                src="https://cdn.builder.io/api/v1/image/assets/TEMP/902f3ae4fd6930e29a6fd4d1b4e7d7844a7ad167ca20c20b8ea9e270dc524105?placeholderIfAbsent=true&apiKey=877b457759d54d259ca44608a719ca2c"
-                alt="Back icon"
-                class="back-icon"
-            />
-            <span>Back to Near to Expire Product Listing</span>
-        </a>
-    </section>
-{% endif %}
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        {% for recipe in recipes %}
+          <article class="bg-white rounded-lg shadow-lg overflow-hidden hover:scale-105 transition transform duration-200">
+            <img src="{{ recipe.image }}" alt="{{ recipe.title }}" class="w-full h-64 object-cover rounded-t-lg" />
+            <div class="p-6">
+              <h2 class="text-xl font-semibold text-gray-800">{{ recipe.title }}</h2>
+              <a href="{% url 'recipe_detail' recipe.id %}" target="_blank">
+                <button class="mt-4 w-full py-2 text-lg bg-green-600 text-white rounded-lg hover:bg-green-700 transition duration-200">View Recipe</button>
+              </a>
+            </div>
+          </article>
+        {% endfor %}
+      </div>
+    </div>
+  {% else %}
+    <div class="bg-yellow-600 p-6 rounded-lg text-black mb-12">
+      <h2 class="text-2xl font-bold">No recipes found!</h2>
+      <a href="{% url 'recipes' %}" class="text-lg mt-4 inline-block underline text-gray-800">Back to Near to Expire Product Listing</a>
+    </div>
+  {% endif %}
+</section>
 
 {% endblock %}
