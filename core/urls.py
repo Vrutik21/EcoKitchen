@@ -15,4 +15,7 @@ urlpatterns = [
     path('recipes/detail/<int:recipe_id>/', views.recipe_detail, name='recipe_detail'),
     path('export_food_items/', views.export_food_items, name='export_food_items'),
     path('user_history/', views.user_history, name='user_history'),
+    path('unregistered/', views.unregistered, name='unregistered'),
+    path('unregistered/recipes',views.unregistered_recipe, name='unregistered_recipe'),
+    path("unregistered/recipes/<int:recipe_id>/", views.unregistered_recipe_detail, name="unregistered_recipe_detail")
 ]

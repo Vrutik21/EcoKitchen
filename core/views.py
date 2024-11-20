@@ -17,12 +17,13 @@ from django.utils.timezone import now
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login, authenticate
 from django.db.models import Count, Q
+import json
 
 # Register view
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from .forms import CustomUserCreationForm
-
+from .expiry import expiry_of_ingredient
 def register(request):
     if request.method == "POST":
         form = CustomUserCreationForm(request.POST)
@@ -345,3 +346,26 @@ def check_food_item_expiry(sender, instance, created, **kwargs):
                 print(f"Notification sent to {instance.user.email} for {instance.name}")
             except Exception as e:
                 print(f"Error sending email: {e}")
+
+def unregistered(request):
+    if request.method == "GET":
+        return render(request, 'unregistered.html')
+    
+def unregistered_recipe(request):
+    if request.method == "POST":
+        ingredients = request.POST.get('ingredients')
+        response = get_recipes_by_ingredients(ingredients)
+        # recipes = json.loads(response)
+        return render(request, 'unregistered_recipe.html', {"recipes": response})
+    return render(request, 'unregistered.html')
+
+def unregistered_recipe_detail(request, recipe_id):
+    # if request.method== "POST":
+    #     recipe = get_recipe_details(recipe_id)
+    #     return render(request, 'unregistered_recipe_detail.html', {'recipe': recipe})
+    # return render(request, 'unregistered_recipe.html')
+    recipe = get_recipe_details(recipe_id)
+    if recipe:
+        return render(request, 'unregistered_recipe_details.html', {'recipe': recipe})
+    else:
+        return render(request, 'unregistered_recipe.html', {'error': 'Recipe details not found.'})

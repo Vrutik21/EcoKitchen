@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="flex items-center justify-center py-4 min-h-screen bg-green-50 rounded-xl">
+    <section class="max-w-screen-xl w-full p-8 space-y-8">
+        <!-- Title and Description -->
+        <div class="text-center text-black mb-8">
+            <h1 class="text-4xl font-semibold tracking-wide text-emerald-600">Recipe Results</h1>
+            <p class="text-lg text-gray-600 mt-4">Discover recipes based on the ingredients you provided!</p>
+        </div>
+
+        <!-- Error Message (if any) -->
+        {% if error %}
+        <div class="bg-red-600 p-6 rounded-lg text-white mb-8">
+            <h2 class="text-2xl font-bold">Oops, something went wrong!</h2>
+            <p class="mt-2">{{ error }}</p>
+            <a href="{% url 'unregistered_recipe' %}" class="text-lg mt-4 inline-block underline">Try Again</a>
+        </div>
+        {% elif recipes %}
+        <!-- Recipe Results -->
+        <div class="space-y-12">
+            <a href="{% url 'unregistered_recipe' %}" class="flex items-center gap-3 text-black text-xl mb-8">
+                <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/902f3ae4fd6930e29a6fd4d1b4e7d7844a7ad167ca20c20b8ea9e270dc524105?placeholderIfAbsent=true&apiKey=877b457759d54d259ca44608a719ca2c" alt="Back icon" class="w-6 h-6" />
+                <span>Try Another Search</span>
+            </a>
+
+            <!-- Recipes Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                {% for recipe in recipes %}
+                <article class="bg-white rounded-lg shadow-lg overflow-hidden hover:scale-105 transition transform duration-200">
+                    <img src="{{ recipe.image }}" alt="{{ recipe.title }}" class="w-full h-64 object-cover rounded-t-lg" />
+                    <div class="p-6">
+                        <h2 class="text-xl font-semibold text-gray-800">{{ recipe.title }}</h2>
+                        <a href="{% url 'unregistered_recipe_detail' recipe.id %}" target="_blank">
+                            <button class="mt-4 w-full py-2 text-lg bg-green-600 text-white rounded-lg hover:bg-green-700 transition duration-200">
+                                View Recipe
+                            </button>
+                        </a>
+                    </div>
+                </article>
+                {% endfor %}
+            </div>
+        </div>
+        {% else %}
+        <!-- No Recipes Found -->
+        <div class="bg-yellow-600 p-6 rounded-lg text-black mb-8">
+            <h2 class="text-2xl font-bold">No recipes found!</h2>
+            <a href="{% url 'unregistered_recipe' %}" class="text-lg mt-4 inline-block underline text-gray-800">Try Again</a>
+        </div>
+        {% endif %}
+    </section>
+</div>
+{% endblock %}
