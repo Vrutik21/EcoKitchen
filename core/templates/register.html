@@ -16,13 +16,13 @@
     >
       <!-- Left Section with Branding -->
       <div
-        class="md:w-1/2 p-8 flex flex-col items-center justify-center bg-gradient-to-t from-green-300 to-emerald-400 text-white"
+        class="md:w-1/2 px-8 flex flex-col items-center justify-end bg-gradient-to-t from-green-300 to-emerald-400 text-white"
       >
         <div class="flex flex-col items-center">
           <img
-            src="{% static '/images/logo.svg' %}"
+            src="{% static '/images/app_logo.png' %}"
             alt="Eco Kitchen Logo"
-            class="h-20 w-20 mb-4"
+            class="h-10 w-10 mb-4"
           />
           <h1 class="text-4xl font-bold">Join Eco Kitchen</h1>
           <p class="mt-4 text-center text-lg">
@@ -31,7 +31,7 @@
         </div>
         <div class="mt-8 w-full">
           <img
-            src="{% static 'images/eco_join.svg' %}"
+            src="{% static 'images/poke_bowl.svg' %}"
             alt="Join Us"
             class="w-full"
           />
@@ -39,7 +39,7 @@
       </div>
 
       <!-- Right Section with Registration Form -->
-      <div class="md:w-1/2 p-8 flex flex-col justify-center">
+      <div class="md:w-1/2 px-8 py-4 flex flex-col justify-center">
         <h2 class="text-2xl font-semibold text-emerald-600 mb-4 text-center">
           Create Your Account
         </h2>
@@ -67,7 +67,7 @@
                 placeholder="Choose a username"
               />
               <img
-                src="{% static '/images/user_icon.svg' %}"
+                src="{% static '/images/user_icon.png' %}"
                 alt="User Icon"
                 class="absolute top-3 right-3 w-6 h-6"
               />
@@ -91,7 +91,7 @@
                 placeholder="Enter your email"
               />
               <img
-                src="{% static '/images/email_icon.svg' %}"
+                src="{% static '/images/email_icon.png' %}"
                 alt="Email Icon"
                 class="absolute top-3 right-3 w-6 h-6"
               />
@@ -114,7 +114,7 @@
                 placeholder="Create a password"
               />
               <img
-                src="{% static '/images/lock_icon.svg' %}"
+                src="{% static '/images/pass_lock.png' %}"
                 alt="Password Icon"
                 class="absolute top-3 right-3 w-6 h-6"
               />
@@ -137,7 +137,7 @@
                 placeholder="Confirm your password"
               />
               <img
-                src="{% static '/images/lock_icon.svg' %}"
+                src="{% static '/images/pass_lock.png' %}"
                 alt="Confirm Password Icon"
                 class="absolute top-3 right-3 w-6 h-6"
               />
@@ -171,6 +171,14 @@
             >
           </p>
         </div>
+        <div class="mt-2 text-center">
+          <p class="text-gray-500">
+              Try Recipes? 
+              <a href="{% url 'unregistered' %}" class="text-emerald-600 hover:underline">
+                  Find Recipes Without an Account
+              </a>
+          </p>
+      </div>
       </div>
     </div>
   </body>

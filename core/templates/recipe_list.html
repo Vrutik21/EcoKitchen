@@ -2,6 +2,8 @@
 
 {% block title %}Recipes{% endblock %}
 
+{% load static %}
+
 {% block content %}
 <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
 <section class="flex flex-col items-center px-8 pt-16 pb-32 max-md:px-4 max-md:pb-24 bg-green-50 rounded-xl">
@@ -52,8 +54,8 @@
               class="flex items-center gap-4 px-8 py-3 bg-green-600 text-white text-xl font-semibold rounded-lg shadow-md hover:bg-green-700 transition duration-300">
         <span>Make Recipe</span>
         <img loading="lazy" 
-             src="https://cdn.builder.io/api/v1/image/assets/TEMP/a3b83e6e6f5ebbae1d8c72fdc0c02225111fedba2f8a51fe2718b5b34c8cf912?placeholderIfAbsent=true&apiKey=877b457759d54d259ca44608a719ca2c" 
-             class="w-6 h-6 object-contain" 
+             src="{% static 'images/recipe_icon.png' %}" 
+             class="w-8 h-8 object-contain" 
              alt="Make Recipe icon" />
       </button>
     </div>
