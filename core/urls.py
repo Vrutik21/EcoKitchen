@@ -18,5 +18,6 @@ urlpatterns = [
     path('user_history/', views.user_history, name='user_history'),
     path('unregistered/', views.unregistered, name='unregistered'),
     path('unregistered/recipes',views.unregistered_recipe, name='unregistered_recipe'),
-    path("unregistered/recipes/<int:recipe_id>/", views.unregistered_recipe_detail, name="unregistered_recipe_detail")
+    path("unregistered/recipes/<int:recipe_id>/", views.unregistered_recipe_detail, name="unregistered_recipe_detail"),
+    path('add-selected-recipes/', views.add_selected_recipes, name='add_selected_recipes')
 ]

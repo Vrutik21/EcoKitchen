@@ -3,6 +3,52 @@
 {% block title %}Recipe Results{% endblock %}
 
 {% block content %}
+<style>
+  .checkbox-recipe {
+    width: 20px;
+    height: 20px;
+    background-color: white;
+    border: 2px solid #d1d5db;
+    border-radius: 4px;
+    outline: none;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s;
+  }
+
+  .checkbox-recipe:checked {
+    background-color: #48bb78;
+    border-color: #38a169;
+  }
+
+  .checkbox-recipe:focus {
+    border-color: #38a169;
+    box-shadow: 0 0 0 2px rgba(72, 187, 120, 0.5);
+  }
+
+  .submit-btn {
+    margin-top: 1.5rem;
+    width: 100%;
+    padding: 1rem;
+    font-size: 1.125rem;
+    font-weight: bold;
+    background-color: #3b82f6;
+    color: white;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+
+  .submit-btn:hover {
+    background-color: #2563eb;
+  }
+
+  .submit-btn:disabled {
+    background-color: #d1d5db;
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+</style>
+
 <section class="bg-gradient-to-b bg-green-50 py-16 px-6 max-w-screen-xl mx-auto rounded-lg shadow-lg">
   <div class="text-center text-black mb-12">
     <h1 class="text-4xl font-semibold tracking-wide">Recipe Results</h1>
@@ -16,26 +62,30 @@
       <a href="{% url 'recipes' %}" class="text-lg mt-4 inline-block underline text-yellow-300">Back to Near to Expire Product Listing</a>
     </div>
   {% elif recipes %}
-    <div class="space-y-12">
-      <a href="{% url 'recipes' %}" class="flex items-center gap-3 text-black text-xl mb-8">
-        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/902f3ae4fd6930e29a6fd4d1b4e7d7844a7ad167ca20c20b8ea9e270dc524105?placeholderIfAbsent=true&apiKey=877b457759d54d259ca44608a719ca2c" alt="Back icon" class="w-6 h-6 text-black" />
-        <span>Back to Near to Expire Product Listing</span>
-      </a>
-
+    <form method="POST" action="{% url 'add_selected_recipes' %}">
+      {% csrf_token %}
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {% for recipe in recipes %}
-          <article class="bg-white rounded-lg shadow-lg overflow-hidden hover:scale-105 transition transform duration-200">
-            <img src="{{ recipe.image }}" alt="{{ recipe.title }}" class="w-full h-64 object-cover rounded-t-lg" />
+          <article class="bg-white rounded-lg shadow-lg overflow-hidden hover:scale-105 transition transform duration-200 relative">
+            <!-- Checkbox -->
+            <input type="checkbox" name="selected_recipes" value="{{ recipe.id }}" class="absolute top-4 left-4 checkbox-recipe">
+            <!-- Recipe Card -->
+            <img src="{{ recipe.image }}" alt="{{ recipe.title }}" class="w-full h-64 object-cover rounded-t-lg">
             <div class="p-6">
               <h2 class="text-xl font-semibold text-gray-800">{{ recipe.title }}</h2>
               <a href="{% url 'recipe_detail' recipe.id %}" target="_blank">
-                <button class="mt-4 w-full py-2 text-lg bg-green-600 text-white rounded-lg hover:bg-green-700 transition duration-200">View Recipe</button>
+                <button class="mt-4 w-full py-2 text-lg bg-green-600 text-white rounded-lg hover:bg-green-700 transition duration-200">
+                  View Recipe
+                </button>
               </a>
             </div>
           </article>
         {% endfor %}
       </div>
-    </div>
+      <button id="add-recipes-btn" type="submit" class="submit-btn" disabled>
+        Add Selected Recipes
+      </button>
+    </form>
   {% else %}
     <div class="bg-yellow-600 p-6 rounded-lg text-black mb-12">
       <h2 class="text-2xl font-bold">No recipes found!</h2>
@@ -44,4 +94,24 @@
   {% endif %}
 </section>
 
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const checkboxes = document.querySelectorAll('.checkbox-recipe');
+    const submitButton = document.getElementById('add-recipes-btn');
+
+    const toggleButtonState = () => {
+      const anyChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
+      submitButton.disabled = !anyChecked;
+    };
+
+    // Add event listeners to all checkboxes
+    checkboxes.forEach(checkbox => {
+      checkbox.addEventListener('change', toggleButtonState);
+    });
+
+    // Initial state
+    toggleButtonState();
+  });
+</script>
 {% endblock %}
+

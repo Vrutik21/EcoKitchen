@@ -1,5 +1,6 @@
 from django.contrib.auth import logout
 from django.urls import reverse_lazy
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import UpdateView, DeleteView
 from .utils import send_email_notification
 from .forms import FoodItemForm, RecipeForm
@@ -105,14 +106,16 @@ def dashboard(request):
 
     # Recipes
     recipes = request.user.recipes.all()
+    new_recipes = recipes.order_by('-created_at')[:5]  # Fetch the latest 5 recipes
 
     context = {
         'food_items': food_items,
         'recipes': recipes,
+        'new_recipes': new_recipes,
         'expired_count': expired_count,
         'non_expired_count': non_expired_count,
-        'priority_data': list(priority_data), 
-        'expiring_soon': expiring_soon, 
+        'priority_data': list(priority_data),
+        'expiring_soon': expiring_soon,
     }
     return render(request, 'dashboard.html', context)
 
@@ -382,3 +385,25 @@ def food_item_details(request, item_id):
     }
 
     return JsonResponse(data)
+
+@login_required(login_url='/login')
+@csrf_exempt
+def add_selected_recipes(request):
+    if request.method == 'POST':
+        # Get selected recipe IDs from the form
+        selected_recipe_ids = request.POST.getlist('selected_recipes')
+
+        # Fetch recipe details from the API and save them to the database
+        for recipe_id in selected_recipe_ids:
+            recipe_data = get_recipe_details(recipe_id)  # Fetch details from API
+            if recipe_data:
+                Recipe.objects.create(
+                    user=request.user,
+                    title=recipe_data['title'],
+                    description=recipe_data.get('description', 'No description available'),
+                    ingredients=recipe_data.get('ingredients', 'N/A'),
+                    instructions=recipe_data.get('instructions', 'N/A'),
+                )
+        messages.success(request, "Selected recipes have been added to your collection!")
+
+    return redirect('dashboard')
