@@ -6,74 +6,87 @@
 
 {% block content %}
 <div class="min-h-screen bg-green-50 rounded-xl text-gray-800 px-6 py-8">
-<!-- Welcome Section -->
-<div class="bg-gradient-to-r from-green-700 to-green-600 text-white rounded-xl shadow-lg p-6 mb-10">
+  <!-- Welcome Section -->
+  <div class="bg-gradient-to-r from-green-700 to-green-600 text-white rounded-xl shadow-lg p-6 mb-10">
     <div class="flex flex-col md:flex-row items-center md:items-start justify-between">
-        <div class="mb-4 md:mb-0">
-            <h1 class="text-3xl font-extrabold mb-2">Welcome Back, {{ user.username }}!</h1>
-            <p class="text-lg italic font-semibold">
-                Cook Smart, <span class="text-yellow-300">Waste Less!</span>
-            </p>
-        </div>
+      <div class="mb-4 md:mb-0">
+        <h1 class="text-3xl font-extrabold mb-2">Welcome Back, {{ user.username }}!</h1>
+        <p class="text-lg italic font-semibold">
+          Cook Smart, <span class="text-yellow-300">Waste Less!</span>
+        </p>
+      </div>
         <div class="hidden md:block">
             <!-- <img src="{% static 'images/welcome_img.png' %}" alt="Eco Friendly" class="h-24"> -->
         </div>
     </div>
+  </div>
+
+  <!-- Statistics Section -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+    <div class="bg-green-500 hover:bg-green-400 rounded-lg shadow-md p-6 text-center transition">
+      <h3 class="text-xl font-semibold text-white">Total Food Items</h3>
+      <p class="text-4xl font-extrabold text-yellow-300">{{ food_items|length }}</p>
+    </div>
+    <div class="bg-green-500 hover:bg-green-400 rounded-lg shadow-md p-6 text-center transition">
+      <h3 class="text-xl font-semibold text-white">Expiring Soon</h3>
+      <p class="text-4xl font-extrabold text-yellow-300">{{ expiring_soon|length }}</p>
+    </div>
+    <div class="bg-green-500 hover:bg-green-400 rounded-lg shadow-md p-6 text-center transition">
+      <h3 class="text-xl font-semibold text-white">Expired Food Items</h3>
+      <p class="text-4xl font-extrabold text-yellow-300">{{ expired_count }}</p>
+    </div>
+  </div>
+
+  <!-- Expiring Soon Section -->
+  <div>
+    <h2 class="text-2xl font-semibold mb-6 text-green-600">Expiring Soon/Expired</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {% for food_item in expiring_soon %}
+      <div class="bg-white rounded-lg shadow-md p-4">
+        <h4 class="text-lg font-bold text-green-500">{{ food_item.name }}</h4>
+        <p class="text-sm text-gray-700">Expires: {{ food_item.expiration_date }}</p>
+        <button type="button"
+                class="text-green-600 hover:text-yellow-400 mt-2 block transition view-details-btn"
+                data-id="{{ food_item.id }}">
+          View Details
+        </button>
+      </div>
+      {% empty %}
+      <div class="bg-white rounded-lg shadow-md p-4 text-center">
+        <p class="text-gray-500">No items expiring soon. Great job staying on top of things!</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Charts Section -->
+  <div class="mt-12">
+    <h2 class="text-2xl font-semibold mb-6 text-green-600">Statistics</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="bg-white p-6 rounded-lg shadow-md">
+        <h4 class="text-lg font-semibold mb-4 text-center text-green-600">Expired vs. Non-Expired Items</h4>
+        <canvas id="expiredChart" class="w-full h-64"></canvas>
+      </div>
+      <div class="bg-white p-6 rounded-lg shadow-md">
+        <h4 class="text-lg font-semibold mb-4 text-center text-green-600">Food Items by Priority</h4>
+        <canvas id="priorityChart" class="w-full h-64"></canvas>
+      </div>
+    </div>
+  </div>
 </div>
 
-
-    <!-- Statistics Section -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-        <div class="bg-green-500 hover:bg-green-400 rounded-lg shadow-md p-6 text-center transition">
-            <h3 class="text-xl font-semibold text-white">Total Food Items</h3>
-            <p class="text-4xl font-extrabold text-yellow-300">{{ food_items|length }}</p>
-        </div>
-        <div class="bg-green-500 hover:bg-green-400 rounded-lg shadow-md p-6 text-center transition">
-            <h3 class="text-xl font-semibold text-white">Expiring Soon</h3>
-            <p class="text-4xl font-extrabold text-yellow-300">{{ expiring_soon|length }}</p>
-        </div>
-        <div class="bg-green-500 hover:bg-green-400 rounded-lg shadow-md p-6 text-center transition">
-            <h3 class="text-xl font-semibold text-white">Total Recipes</h3>
-            <p class="text-4xl font-extrabold text-yellow-300">{{ recipes|length }}</p>
-        </div>
+<!-- Modal Overlay -->
+<div id="foodItemModal" class="fixed inset-0 z-50 hidden bg-black bg-opacity-50 flex justify-center items-center">
+  <div class="bg-white rounded-lg shadow-lg p-6 max-w-lg w-full relative">
+    <button id="closeModal" class="absolute top-2 right-2 text-gray-600 hover:text-red-500 text-xl">&times;</button>
+    <div id="modalContent" class="text-gray-800">
+      <p class="text-center">Loading...</p>
     </div>
-
-    <!-- Expiring Soon Section -->
-    <div>
-        <h2 class="text-2xl font-semibold mb-6 text-green-600">Expiring Soon/Expired</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {% for food_item in expiring_soon %}
-            <div class="bg-white rounded-lg shadow-md p-4">
-                <h4 class="text-lg font-bold text-green-500">{{ food_item.name }}</h4>
-                <p class="text-sm text-gray-700">Expires: {{ food_item.expiration_date }}</p>
-                <a href="#" class="text-green-600 hover:text-yellow-400 mt-2 block transition">View Details</a>
-            </div>
-            {% empty %}
-            <div class="bg-white rounded-lg shadow-md p-4 text-center">
-                <p class="text-gray-500">No items expiring soon. Great job staying on top of things!</p>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-
-    <!-- Charts Section -->
-    <div class="mt-12">
-        <h2 class="text-2xl font-semibold mb-6 text-green-600">Statistics</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="bg-white p-6 rounded-lg shadow-md">
-                <h4 class="text-lg font-semibold mb-4 text-center text-green-600">Expired vs. Non-Expired Items</h4>
-                <canvas id="expiredChart" class="w-full h-64"></canvas>
-            </div>
-            <div class="bg-white p-6 rounded-lg shadow-md">
-                <h4 class="text-lg font-semibold mb-4 text-center text-green-600">Food Items by Priority</h4>
-                <canvas id="priorityChart" class="w-full h-64"></canvas>
-            </div>
-        </div>
-    </div>
+  </div>
 </div>
 
 <script>
-    // Data for Expired vs. Non-Expired Items
+ // Data for Expired vs. Non-Expired Items
     const expiredData = {
         labels: ['Expired', 'Non-Expired'],
         datasets: [{
@@ -122,5 +135,49 @@
             }
         }
     });
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const modal = document.getElementById('foodItemModal');
+    const closeModal = document.getElementById('closeModal');
+    const modalContent = document.getElementById('modalContent');
+
+    // Open modal
+    const openModal = (foodItemId) => {
+      modalContent.innerHTML = '<p class="text-center">Loading...</p>'; // Placeholder content
+      modal.classList.remove('hidden');
+
+      // Fetch food item details
+      fetch(`/food-item/${foodItemId}/`)
+        .then(response => response.json())
+        .then(data => {
+          modalContent.innerHTML = `
+            <h2 class="text-xl font-bold text-green-600">${data.name}</h2>
+            <ul class="list-disc pl-6 mt-4">
+              <li><strong>Expiration Date:</strong> ${data.expiration_date}</li>
+              <li><strong>Quantity:</strong> ${data.quantity}</li>
+              <li><strong>Category:</strong> ${data.category}</li>
+              <li><strong>Description:</strong> ${data.description}</li>
+            </ul>
+          `;
+        })
+        .catch(() => {
+          modalContent.innerHTML = `<p class="text-center text-red-500">Failed to load details. Please try again.</p>`;
+        });
+    };
+
+    // Close modal
+    closeModal.addEventListener('click', () => {
+      modal.classList.add('hidden');
+    });
+
+    // Attach open modal to all "View Details" buttons
+    document.querySelectorAll('.view-details-btn').forEach(button => {
+      button.addEventListener('click', (event) => {
+        event.preventDefault();
+        const foodItemId = button.getAttribute('data-id');
+        openModal(foodItemId);
+      });
+    });
+  });
 </script>
 {% endblock %}

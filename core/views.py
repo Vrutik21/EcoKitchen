@@ -1,14 +1,13 @@
-from django.contrib.auth import login, logout
+from django.contrib.auth import logout
 from django.urls import reverse_lazy
 from django.views.generic import UpdateView, DeleteView
 from .utils import send_email_notification
 from .forms import FoodItemForm, RecipeForm
 from .models import FoodItem, Recipe, UserActivity, Notification
 from django.contrib.auth.decorators import login_required
-from django.contrib import messages
 from .spoonacular_service import get_recipes_by_ingredients, get_recipe_details
 import csv
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.core.mail import send_mail
@@ -16,14 +15,12 @@ from django.conf import settings
 from django.utils.timezone import now
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login, authenticate
-from django.db.models import Count, Q
-import json
+from django.db.models import Count
 
 # Register view
 from django.contrib import messages
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .forms import CustomUserCreationForm
-from .expiry import expiry_of_ingredient
 def register(request):
     if request.method == "POST":
         form = CustomUserCreationForm(request.POST)
@@ -369,3 +366,19 @@ def unregistered_recipe_detail(request, recipe_id):
         return render(request, 'unregistered_recipe_details.html', {'recipe': recipe})
     else:
         return render(request, 'unregistered_recipe.html', {'error': 'Recipe details not found.'})
+
+def food_item_details(request, item_id):
+    # Fetch the food item or return a 404 if not found
+    food_item = get_object_or_404(FoodItem, id=item_id)
+
+    # Serialize the food item data
+    data = {
+        "id": food_item.id,
+        "name": food_item.name,
+        "expiration_date": food_item.expiration_date.strftime('%Y-%m-%d'),  # Format the date
+        "quantity": food_item.quantity,
+        "category": food_item.category if food_item.category else "N/A",  # Adjust based on your model
+        "description": food_item.description or "No description provided",
+    }
+
+    return JsonResponse(data)

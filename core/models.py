@@ -4,17 +4,17 @@ from django.utils import timezone
 from datetime import timedelta
 
 CATEGORY_CHOICES = [
-    ('vegetable', 'Vegetable'),
-    ('fruit', 'Fruit'),
-    ('dairy', 'Dairy'),
-    ('meat', 'Meat'),
-    ('others', 'Others'),
+    ('Vegetable', 'Vegetable'),
+    ('Fruit', 'Fruit'),
+    ('Dairy', 'Dairy'),
+    ('Meat', 'Meat'),
+    ('Others', 'Others'),
 ]
 
 PRIORITY_LEVELS = [
-    ('low', 'Low'),
-    ('medium', 'Medium'),
-    ('high', 'High'),
+    ('Low', 'Low'),
+    ('Medium', 'Medium'),
+    ('High', 'High'),
 ]
 
 class Profile(models.Model):
