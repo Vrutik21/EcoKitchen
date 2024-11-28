@@ -302,7 +302,7 @@ def check_food_item_expiry(sender, instance, created, **kwargs):
                 f"Your food item '{instance.name}' is expiring soon! "
                 f"It will expire on {instance.expiration_date}.\n\n"
                 "Please use it soon or consider donating it to avoid waste.\n\n"
-                "Regards,\nEcoEats Team"
+                "Regards,\n EcoKitchen Team"
             )
             recipient_list = [user_email]
 
@@ -331,7 +331,7 @@ def check_food_item_expiry(sender, instance, created, **kwargs):
                 f"Your food item '{instance.name}' is expiring soon! "
                 f"It will expire on {instance.expiration_date}.\n\n"
                 "Please use it soon or consider donating it to avoid waste.\n\n"
-                "Regards,\nEcoEats Team"
+                "Regards,\n EcoKitchen Team"
             )
             recipient_list = [instance.user.email]
 

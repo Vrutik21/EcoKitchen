@@ -21,7 +21,7 @@ class Command(BaseCommand):
                 f"Your food item '{food_item.name}' is expiring soon! "
                 f"It will expire on {food_item.expiration_date}.\n\n"
                 "Please use it soon or consider donating it to avoid waste.\n\n"
-                "Regards,\nEcoEats Team"
+                "Regards,\nEco Kitchen Team"
             )
             recipient_list = [food_item.user.email]
             send_email_notification(subject, message, recipient_list)
