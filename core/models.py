@@ -45,9 +45,10 @@ class FoodItem(models.Model):
 
 class Recipe(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='recipes')
+    recipe_id = models.IntegerField(default=0)
     title = models.CharField(max_length=100)
     description = models.TextField()
-    ingredients = models.TextField()  # Comma-separated list of ingredients
+    ingredients = models.TextField()
     instructions = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 

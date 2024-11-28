@@ -409,6 +409,7 @@ def add_selected_recipes(request):
             if recipe_data:
                 Recipe.objects.create(
                     user=request.user,
+                    recipe_id=recipe_id,
                     title=recipe_data['title'],
                     description=recipe_data.get('description', 'No description available'),
                     ingredients=recipe_data.get('ingredients', 'N/A'),
