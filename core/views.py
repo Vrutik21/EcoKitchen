@@ -82,8 +82,10 @@ def login_view(request):
 
     return render(request, 'login.html', {'form': form})
 
-# Logout view
 def logout_view(request):
+    storage = messages.get_messages(request)
+    list(storage)
+    request.session.flush()
     logout(request)
     return redirect('login')
 
@@ -105,7 +107,8 @@ def dashboard(request):
     )
 
     # Recipes
-    recipes = request.user.recipes.all()
+    # recipes = request.user.recipes.all()
+    recipes = Recipe.objects.filter(user=request.user)
     new_recipes = recipes.order_by('-created_at')[:5]  # Fetch the latest 5 recipes
 
     context = {
@@ -236,6 +239,13 @@ def add_recipe(request):
     else:
         form = RecipeForm()
     return render(request, 'add_recipe.html', {'form': form})
+
+@login_required(login_url='/login')
+def delete_recipe(request, recipe_id):
+    recipe = get_object_or_404(Recipe, id=recipe_id)
+    recipe.delete()
+    messages.success(request, f"Recipe '{recipe.title}' has been successfully deleted.")
+    return redirect('dashboard')
 
 def export_food_items(request):
     food_items = request.user.food_items.all()

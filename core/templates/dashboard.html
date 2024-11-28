@@ -40,7 +40,7 @@
   <!-- Expiring Soon Section -->
   <div>
     <h2 class="text-2xl font-semibold mb-6 text-green-600">Expiring Soon/Expired</h2>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
       {% for food_item in expiring_soon %}
       <div class="bg-white rounded-lg shadow-md p-4">
         <h4 class="text-lg font-bold text-green-500">{{ food_item.name }}</h4>
@@ -59,17 +59,17 @@
     </div>
   </div>
 
-  <!-- Generated Recipe/s section -->
-  <div class="mt-12">
+<div class="mt-12">
   <h2 class="text-2xl font-semibold mb-6 text-green-600">Newly Added Recipes</h2>
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
     {% for recipe in new_recipes %}
       <div class="bg-white rounded-lg shadow-md p-4">
         <h4 class="text-lg font-bold text-green-500">{{ recipe.title }}</h4>
-{#        <p class="text-sm text-gray-700">{{ recipe.description|truncatewords:20 }}</p>#}
-        <a href="{% url 'recipe_detail' recipe.id %}" target="_blank" class="block mt-2 text-green-600 underline">
-          View Recipe
-        </a>
+        <div class="flex items-center justify-between mt-2">
+              <a href="{% url 'recipe_detail' recipe.id %}" target="_blank" class="block mt-2 text-green-600"> View Details</a>
+              <a href="{% url 'delete_recipe' recipe.id %}" class="text-red-600 hover"
+              onclick="return confirm('Are you sure you want to delete this recipe?');"> Delete </a>
+          </div>
       </div>
     {% empty %}
       <div class="bg-white rounded-lg shadow-md p-4 text-center">
@@ -79,6 +79,97 @@
   </div>
 </div>
 
+<!-- Modal Overlay for Deleting Recipe -->
+<div id="deleteModal" class="fixed inset-0 z-50 hidden bg-black bg-opacity-50 flex justify-center items-center">
+  <div class="bg-white rounded-lg shadow-lg p-6 max-w-lg w-full relative">
+    <button id="closeDeleteModal" class="absolute top-2 right-2 text-gray-600 hover:text-red-500 text-xl">&times;</button>
+    <div id="modalContent" class="text-gray-800">
+      <h2 class="text-xl font-bold text-green-600 mb-4">Are you sure you want to delete this recipe?</h2>
+      <div class="flex justify-between">
+        <button id="cancelDelete" class="px-6 py-2 bg-gray-300 text-gray-800 font-semibold rounded-md hover:bg-gray-400 transition">Cancel</button>
+        <a id="confirmDelete" href="#" class="px-6 py-2 bg-red-600 text-white font-semibold rounded-md hover:bg-red-700 transition">Confirm Delete</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // JavaScript for opening and closing the modal
+  const deleteModal = document.getElementById('deleteModal');
+  const closeDeleteModal = document.getElementById('closeDeleteModal');
+  const cancelDelete = document.getElementById('cancelDelete');
+  const confirmDelete = document.getElementById('confirmDelete');
+  let recipeIdToDelete = null;
+
+  // Function to open the delete modal
+  function openDeleteModal(recipeId) {
+    recipeIdToDelete = recipeId; // Set the recipe ID to delete
+    deleteModal.classList.remove('hidden'); // Show the modal
+  }
+
+  // Close the modal when clicking the "X" button or cancel button
+  closeDeleteModal.addEventListener('click', () => {
+    deleteModal.classList.add('hidden'); // Hide the modal
+  });
+
+  cancelDelete.addEventListener('click', () => {
+    deleteModal.classList.add('hidden'); // Hide the modal when cancel is clicked
+  });
+
+  // Handle the confirm delete button
+  confirmDelete.addEventListener('click', () => {
+    if (recipeIdToDelete) {
+      window.location.href = `/delete_recipe/${recipeIdToDelete}/`;
+    }
+  });
+</script>
+</div>
+
+<!-- Modal Overlay for Deleting Recipe -->
+<div id="deleteModal" class="fixed inset-0 z-50 hidden bg-black bg-opacity-50 flex justify-center items-center">
+  <div class="bg-white rounded-lg shadow-lg p-6 max-w-lg w-full relative">
+    <button id="closeDeleteModal" class="absolute top-2 right-2 text-gray-600 hover:text-red-500 text-xl">&times;</button>
+    <div id="modalContent" class="text-gray-800">
+      <h2 class="text-xl font-bold text-green-600 mb-4">Are you sure you want to delete this recipe?</h2>
+      <div class="flex justify-between">
+        <button id="cancelDelete" class="px-6 py-2 bg-gray-300 text-gray-800 font-semibold rounded-md hover:bg-gray-400 transition">Cancel</button>
+        <a id="confirmDelete" href="#" class="px-6 py-2 bg-red-600 text-white font-semibold rounded-md hover:bg-red-700 transition">Confirm Delete</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // JavaScript for opening and closing the modal
+  const deleteModal = document.getElementById('deleteModal');
+  const closeDeleteModal = document.getElementById('closeDeleteModal');
+  const cancelDelete = document.getElementById('cancelDelete');
+  const confirmDelete = document.getElementById('confirmDelete');
+  let recipeIdToDelete = null;
+
+  // Function to open the delete modal
+  function openDeleteModal(recipeId) {
+    recipeIdToDelete = recipeId; // Set the recipe ID to delete
+    deleteModal.classList.remove('hidden'); // Show the modal
+  }
+
+  // Close the modal when clicking the "X" button or cancel button
+  closeDeleteModal.addEventListener('click', () => {
+    deleteModal.classList.add('hidden'); // Hide the modal
+  });
+
+  cancelDelete.addEventListener('click', () => {
+    deleteModal.classList.add('hidden'); // Hide the modal when cancel is clicked
+  });
+
+  // Handle the confirm delete button
+  confirmDelete.addEventListener('click', () => {
+    if (recipeIdToDelete) {
+      window.location.href = `/delete_recipe/${recipeIdToDelete}/`; // You might need to adjust this URL based on your view
+    }
+  });
+</script>
+    
   <!-- Charts Section -->
   <div class="mt-12">
     <h2 class="text-2xl font-semibold mb-6 text-green-600">Statistics</h2>

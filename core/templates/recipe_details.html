@@ -8,9 +8,9 @@
 <section class="bg-gradient-to-r from-green-50 via-green-100 to-green-200 min-h-screen py-12 px-8">
     <div class="max-w-6xl mx-auto">
         <!-- Back Link -->
-        <a href="{% url 'recipes' %}" class="text-lg text-green-700 font-medium mb-6 block hover:text-green-900">
-            &lt; Back to Recipe Listing
-        </a>
+{#        <a href="{% url 'recipes' %}" class="text-lg text-green-700 font-medium mb-6 block hover:text-green-900">#}
+{#            &lt; Back to Recipe Listing#}
+{#        </a>#}
 
         <!-- Recipe Header Section -->
         <div class="flex flex-col md:flex-row items-center gap-6 mb-12">
@@ -19,7 +19,7 @@
             </div>
             <div class="flex flex-col justify-center items-start text-center md:text-left">
                 <h1 class="text-3xl font-extrabold text-green-800">{{ recipe.title }}</h1>
-                <a href="{{ recipe.sourceUrl }}" class="text-sm text-green-600 hover:text-green-800 mt-2 font-semibold" target="_blank">View Full Recipe on Source</a>
+                <a href="{{ recipe.re }}" class="text-sm text-green-600 hover:text-green-800 mt-2 font-semibold" target="_blank">View Full Recipe on Source</a>
             </div>
         </div>
 
