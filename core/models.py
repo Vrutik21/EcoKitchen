@@ -48,7 +48,7 @@ class Recipe(models.Model):
     recipe_id = models.IntegerField(default=0)
     title = models.CharField(max_length=100)
     description = models.TextField()
-    ingredients = models.TextField()
+    ingredients = models.TextField(blank=True,null=True)
     instructions = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
